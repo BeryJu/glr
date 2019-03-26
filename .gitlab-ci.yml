@@ -1,0 +1,48 @@
+stages:
+    - test
+    - build
+    - docs
+    - deploy
+image: python:3.6
+services:
+    - postgres:latest
+    - redis:latest
+
+isort:
+    script:
+        - echo isort
+    stage: test
+migrations:
+    script:
+        - echo migrations
+    stage: test
+prospector:
+    script:
+        - echo prospector
+    stage: test
+pylint:
+    script:
+        - echo pylint passbook
+    stage: test
+coverage:
+    script:
+        - echo coverage run manage.py test
+        - echo coverage report
+    stage: test
+bandit:
+    script:
+        - echo bandit -r passbook
+    stage: test
+
+package-docker:
+    image:
+        name: gcr.io/kaniko-project/executor:debug
+        entrypoint: [""]
+    before_script:
+        - echo "{\"auths\":{\"docker.$NEXUS_URL\":{\"auth\":\"$NEXUS_AUTH\"}}}" > /kaniko/.docker/config.json
+    script:
+        - echo /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination docker.pkg.beryju.org/passbook:latest --destination docker.pkg.beryju.org/passbook:0.1.27-beta
+    stage: build
+    only:
+        - tags
+        - /^version/.*$/
