@@ -116,13 +116,17 @@ def main(targets, file):
             except KeyError as exc:
                 log(T_RED, 4, "Error: %r" % exc)
 
-if __name__ == '__main__':
-    PARSER = argparse.ArgumentParser(description='Run .gitlab-ci.yml scripts locally.')
-    PARSER.add_argument('target', type=str, default=[], nargs='*',
+def entrypoint():
+    """Main entrypoint"""
+    parser = argparse.ArgumentParser(description='Run .gitlab-ci.yml scripts locally.')
+    parser.add_argument('target', type=str, default=[], nargs='*',
                         help=('Name of target to run. Can be name of target'
                               ', name of stage or stage:target.'))
-    PARSER.add_argument('--file', type=str, default='.gitlab-ci.yml',
+    parser.add_argument('--file', type=str, default='.gitlab-ci.yml',
                         help='Path to .gitlab-ci.yml, defaults to ./.gitlab-ci.yml')
 
-    ARGS = PARSER.parse_args()
-    main(ARGS.target, ARGS.file)
+    args = parser.parse_args()
+    main(args.target, args.file)
+
+if __name__ == '__main__':
+    entrypoint()
