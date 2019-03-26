@@ -1,3 +1,6 @@
+before_script:
+    - pip install -U -r requirements-dev.txt
+
 stages:
     - test
     - build
@@ -10,7 +13,7 @@ services:
 
 isort:
     script:
-        - echo isort
+        - isort -sg env
     stage: test
 migrations:
     script:
@@ -18,11 +21,11 @@ migrations:
     stage: test
 prospector:
     script:
-        - echo prospector
+        - prospector
     stage: test
 pylint:
     script:
-        - echo pylint passbook
+        - pylint glr.py
     stage: test
 coverage:
     script:
@@ -31,7 +34,7 @@ coverage:
     stage: test
 bandit:
     script:
-        - echo bandit -r passbook
+        - echo bandit glr.py
     stage: test
 
 package-docker:
